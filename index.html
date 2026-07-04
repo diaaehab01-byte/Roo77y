@@ -694,14 +694,23 @@ background:radial-gradient(circle at 50% 50%, #3a0d5c 0%, #1b023a 60%, #0b001a 1
         </div>
         <button onclick="checkPassword()" class="music-btn">❤️ Enter ❤️</button>
         <div id="passError" style="color:#ff758f;margin-top:10px;"></div>
-        <button onclick="document.getElementById('song').play()" class="music-btn" style="margin-top:15px;">🎵 تشغيل الأغنية</button>
+        
+        <!-- تعديل هنا: خلينا زرار Birthday Song يستدعي الدالة الجديدة برضو لتجنب المشاكل -->
+        <button onclick="playSong(0)" class="music-btn" style="margin-top:15px;">Sawa Sawa✌️😘 </button>
+        <button onclick="playSong(1)" class="music-btn"> Birthday🎁 </button>
+        <button onclick="playSong(2)" class="music-btn"> 5alek ma3aya❤️</button>
+        <button onclick="playSong(3)" class="music-btn">Love😍</button>
+        <button onclick="playSong(4)" class="music-btn">Ma3aya👀</button>
+</div>
+        
     </div>
 </div>
 
 <div id="flash-overlay"></div>
 
+<!-- تعديل هنا: شيلنا الـ sources الكتير وخلينا عنصر سورس واحد فاضي عشان الـ JS يتحكم فيه -->
 <audio id="song" loop preload="auto">
-    <source src="https://raw.githubusercontent.com/diaaehab01-byte/music/main/music2.mp3" type="audio/mpeg">
+    <source id="audioSource" src="" type="audio/mpeg">
 </audio>
 
 <div id="intro">
@@ -782,6 +791,28 @@ background:radial-gradient(circle at 50% 50%, #3a0d5c 0%, #1b023a 60%, #0b001a 1
 </div>
 
 <script>
+// الإضافة هنا: مصفوفة تحتوي على لينكات الأغاني بالترتيب
+const songList = [
+    "https://raw.githubusercontent.com/diaaehab01-byte/music/main/swa%20swa.mp3",
+    "https://raw.githubusercontent.com/diaaehab01-byte/music/main/music2.mp3",
+    "https://raw.githubusercontent.com/diaaehab01-byte/music/main/diab.mp3",
+    "https://raw.githubusercontent.com/diaaehab01-byte/music/main/hug.mp3",
+    "https://raw.githubusercontent.com/diaaehab01-byte/music/main/m3aya.mp3"
+];
+
+// الإضافة هنا: دالة تشغيل الأغنية بناءً على رقم الـ Index
+function playSong(index) {
+    const audio = document.getElementById('song');
+    const source = document.getElementById('audioSource');
+    
+    if (songList[index]) {
+        audio.pause(); // إيقاف أي أغنية شغالة حالياً
+        source.src = songList[index];
+        audio.load(); // إعادة تحميل العنصر بالمسار الجديد
+        audio.play().catch(error => console.log("Playback failed:", error));
+    }
+}
+
 function togglePass(){
  const p=document.getElementById('passInput');
  p.type=p.type==='password'?'text':'password';
@@ -915,24 +946,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ⏳ سيناريو التوقيت الفني الجديد والمعدل ⏳
     
-    // 1. الانتظار 12 ثانية كاملة بدون حركة ثم تظهر الصورة فجأة
     setTimeout(() => {
         middlePhoto.classList.add("show");
     }, 12000);
 
-    // 2. ظهور الدبدوب بعد الصورة بثانية واحدة (عند الثانية 13)
     setTimeout(() => {
         bearContainer.classList.add("show");
     }, 13000);
 
-    // 3. رسم القلب الكبير أولاً (من الثانية 14 ليستغرق 3.5 ثانية بدلاً من 5 ثوانٍ)
     setTimeout(() => {
         launchHeartNodes(0);
     }, 14000);
 
     function launchHeartNodes(idx) {
         if (idx >= heartTargets.length) {
-            // بعد انتهاء القلب تماماً (عند الثانية 17.5) يبدأ رسم الكلام في غضون 4 ثوانٍ
             launchTextNodes(0);
             return;
         }
@@ -940,21 +967,17 @@ document.addEventListener("DOMContentLoaded", () => {
         let pt = heartTargets[idx];
         createShotHeart(pt);
 
-        // 3.5 ثانية (3500ms) مقسمة على عدد نقاط رسم منحنى القلب
         let delay = 3500 / heartTargets.length;
         setTimeout(() => launchHeartNodes(idx + 1), delay);
     }
 
     function launchTextNodes(idx) {
         if (idx >= textTargets.length) {
-            // عند انتهاء الكلام بالكامل يتم تشغيل النبض والوميض النهائي
             canvas.classList.add("heart-pulse-active");
             bgOverlay.classList.add("glow-red");
 
-            // ظهور الوردة كحركة أخيرة
             setTimeout(() => {
                 bear.classList.add("has-rose");
-                // الاختفاء والانتقال التلقائي لشاشة الهدية
                 setTimeout(() => {
                     intro.style.opacity = "0";
                     setTimeout(() => intro.style.display = "none", 1000);
@@ -968,7 +991,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         createShotHeart(pt);
         
-        // 4 ثوانٍ (4000ms) مقسمة على عدد حروف الكلمة بالتساوي
         let delay = 4000 / textTargets.length;
         setTimeout(() => launchTextNodes(idx + 1), delay);
     }
